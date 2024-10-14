@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Top 20 Port Scanner</h1>
+
+        <!-- Port Scanner Form -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="target">Target Host:</label>
+                <input type="text" id="target" name="target" placeholder="example.com or 192.168.1.1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ports">Select Ports to Scan:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="select-all" onclick="selectAllPorts()"> Select All</label>
+                    {% for port in ports %}
+                        <label><input type="checkbox" name="ports" value="{{ port }}" {% if port in preferred_ports %}checked{% endif %}> {{ port }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <script>
+                function selectAllPorts() {
+                    var checkboxes = document.getElementsByName('ports');
+                    var selectAll = document.getElementById('select-all');
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        checkboxes[i].checked = selectAll.checked;
+                    }
+                }
+            </script>
+            <button type="submit">Scan</button>
+        </form>
+
+        <!-- Scan Results -->
+        {% if results %}
+        <h2>Scan Results for {{ target }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>Status</th>
+                    <th>Service</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td>{{ result[0] }}</td>
+                    <td>{{ result[1] }}</td>
+                    <td>{{ result[2] }}</td>
+                    <td>{{ result[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Time Taken: {{ time_taken }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
